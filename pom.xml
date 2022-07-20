@@ -6,11 +6,26 @@
 
     <groupId>co.com.sofka</groupId>
     <artifactId>challenge-fullstack-game</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>application/app-service</module>
+        <module>domain/model</module>
+        <module>domain/usecase</module>
+        <module>infrastructure/driven-adapters</module>
+        <module>infrastructure/entry-points</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+    </dependencies>
 </project>
