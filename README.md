@@ -1,4 +1,4 @@
-# Challenge: Full Stack Game
+# Challenge: Full Stack Game Backend
 ### Game created by:
 - José Daniel Cruz Ávila
 - Juan Manuel Montoya
