@@ -8,7 +8,7 @@ public class GameId extends Identity {
         super(id);
     }
 
-    public GameId of (String id){
+    public static GameId of (String id){
         return new GameId(id);
     }
 }

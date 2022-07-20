@@ -1,5 +1,6 @@
 package co.com.sofka.fullstackgame.config;
 
+import co.com.sofka.business.generic.UseCase;
 import co.com.sofka.infraestructure.asyn.SubscriberEvent;
 import co.com.sofka.infraestructure.bus.EventBus;
 import co.com.sofka.infraestructure.repository.EventStoreRepository;
@@ -8,6 +9,8 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Set;
 
 @Configuration
 public class ApplicationConfig {

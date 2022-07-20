@@ -1,25 +1,23 @@
 package co.com.sofka.fullstackgame.model.game.commands;
 
-import co.com.sofka.domain.generic.DomainEvent;
-import co.com.sofka.fullstackgame.model.game.values.GameId;
-import co.com.sofka.fullstackgame.model.game.values.PlayerId;
+import co.com.sofka.domain.generic.Command;
 
-public class CreateGameCommand extends DomainEvent {
+public class CreateGameCommand extends Command {
 
-    private final GameId gameId;
-    private final PlayerId playerId;
+    private String gameId;
+    private String playerId;
 
-    public CreateGameCommand(GameId gameId, PlayerId playerId) {
-        super("game.CreateGame");
+    public CreateGameCommand() {}
+
+    public CreateGameCommand(String gameId, String playerId) {
         this.gameId = gameId;
         this.playerId = playerId;
     }
 
-    public GameId getGameId() {
+    public String getGameId() {
         return gameId;
     }
-
-    public PlayerId getPlayerId() {
+    public String getPlayerId() {
         return playerId;
     }
 }

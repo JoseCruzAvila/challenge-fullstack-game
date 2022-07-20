@@ -47,7 +47,7 @@ public class EventListenerSubscriber implements Flow.Subscriber<DomainEvent> {
     @Override
     public void onNext(DomainEvent domainEvent) {
         DomainEvent event = Objects.requireNonNull(domainEvent);
-        this.useCases.stream().filter((useCaseWrap) -> useCaseWrap.eventType().equals(domainEvent.type)).forEach((useCaseWrap) -> {
+        this.useCases.stream().filter((useCaseWrap) -> useCaseWrap.eventType().equals(domainEvent.type)).forEach(useCaseWrap -> {
             UseCase<TriggeredEvent<? extends DomainEvent>, ResponseEvents> useCase = useCaseWrap.usecase();
             useCase.addServiceBuilder(serviceBuilder);
             useCase.addRepository(new DomainEventRepository() {

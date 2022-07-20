@@ -15,13 +15,13 @@ import java.util.Set;
 public class Game extends AggregateEvent<GameId> {
 
     protected GameId gameId;
-    protected boolean playing;
+    protected Boolean playing;
     protected PlayerId winner;
     protected Set<PlayerId> players;
 
     public Game(GameId gameId, PlayerId playerId) {
         super(gameId);
-        appendChange(new GameCreated(gameId,playerId)).apply();
+        appendChange(new GameCreated(gameId, playerId)).apply();
     }
 
     private Game(GameId gameId){
@@ -62,7 +62,6 @@ public class Game extends AggregateEvent<GameId> {
     }
 
     public boolean isPlaying() {
-
         return playing;
     }
 
