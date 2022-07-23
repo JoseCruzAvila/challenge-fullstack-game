@@ -1,0 +1,11 @@
+server:
+  port: ${PORT:8080}
+  origin: ${ORIGIN:*}
+spring:
+  application:
+    name: hero.betting
+  data:
+    mongodb:
+      uri: ${MONGO_URI:mongodb://localhost:27017/cargame}
+  rabbitmq:
+    addresses: ${BUS_URI:amqp://guest:guest@localhost:5672}
