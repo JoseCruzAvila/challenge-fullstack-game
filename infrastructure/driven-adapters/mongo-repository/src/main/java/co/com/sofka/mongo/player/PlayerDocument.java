@@ -1,6 +1,7 @@
 package co.com.sofka.mongo.player;
 
 import lombok.Data;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,5 +17,5 @@ public class PlayerDocument {
     @Indexed(unique = true)
     private String email;
     private Double points;
-    private Set<String> cards;
+    private Set<ObjectId> cards;
 }
