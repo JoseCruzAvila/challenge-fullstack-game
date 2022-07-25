@@ -1,4 +1,4 @@
-package co.com.sofka.model.events;
+package co.com.sofka.generic.events;
 
 public class DomainEvent {
     private final String type;

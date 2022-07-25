@@ -1,25 +1,16 @@
 package co.com.sofka.model.events;
 
-import co.com.sofka.model.player.Player;
+import co.com.sofka.generic.events.DomainEvent;
+import co.com.sofka.model.game.Game;
 import lombok.*;
-
-import java.util.Set;
 
 @Getter
 @Setter
 public class GameStarted extends DomainEvent {
-    private final String id;
-    private final String gameId;
-    private final Boolean playing;
-    private final Player winner;
-    private final Set<Player> players;
+    private final Game source;
 
-    public GameStarted(String id, String gameId, Boolean playing, Player winner, Set<Player> players) {
+    public GameStarted(Game source) {
         super("game.GameStarted");
-        this.id = id;
-        this.gameId = gameId;
-        this.playing = playing;
-        this.winner = winner;
-        this.players = players;
+        this.source = source;
     }
 }

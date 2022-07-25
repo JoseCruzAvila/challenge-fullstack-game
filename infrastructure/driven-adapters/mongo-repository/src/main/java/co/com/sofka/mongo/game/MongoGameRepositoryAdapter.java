@@ -35,7 +35,7 @@ public class MongoGameRepositoryAdapter extends AdapterOperations<Game, GameDocu
         return Mono.just(game)
                 .map(this::toData)
                 .flatMap(this::saveData)
-                .flatMap(currentGame -> this.findById(currentGame.getId()));
+                .flatMap(currentGame -> this.findById("_id", currentGame.getId()));
     }
 
     @Override
@@ -63,15 +63,14 @@ public class MongoGameRepositoryAdapter extends AdapterOperations<Game, GameDocu
                 .map(this::toEntityFromJson);
     }
 
-    @Override
-    public Mono<Game> findById(String id) {
+    public Mono<Game> findById(String criteria, String toFind) {
         var lookup = LookupOperation.newLookup()
                 .from("playerDocument")
                 .localField("playersList")
                 .foreignField("_id")
                 .as("players");
         var project = Aggregation.project("_id", "gameId", "playing", "winnerId", "players");
-        var match = Aggregation.match(Criteria.where("_id").is(id));
+        var match = Aggregation.match(Criteria.where(criteria).is(toFind));
         var playersUnwind = UnwindOperation.newUnwind()
                 .path("players")
                 .noArrayIndex()
@@ -86,35 +85,6 @@ public class MongoGameRepositoryAdapter extends AdapterOperations<Game, GameDocu
                 .as("players");
         var aggregation = Aggregation.newAggregation(
                 lookup, project, match, playersUnwind, playerLookup, group);
-
-        return mongoTemplate.aggregate(aggregation, COLLECTION, String.class)
-                .map(this::toEntityFromJson)
-                .single();
-    }
-
-    public Mono<Game> findByGameId(String gameId) {
-        var lookup = LookupOperation.newLookup()
-                .from("playerDocument")
-                .localField("playersList")
-                .foreignField("_id")
-                .as("players");
-        var project = Aggregation.project("_id", "gameId", "playing", "winnerId", "players");
-        var match = Aggregation.match(Criteria.where("gameId").is(gameId));
-        var playersUnwind = UnwindOperation.newUnwind()
-                .path("players")
-                .noArrayIndex()
-                .preserveNullAndEmptyArrays();
-        var playerLookup = LookupOperation.newLookup()
-                .from("cardDocument")
-                .localField("players.cards")
-                .foreignField("_id")
-                .as("players.deck");
-        var group = Aggregation.group("_id", "gameId", "playing", "winnerId")
-                .push("players")
-                .as("players");
-        var aggregation = Aggregation.newAggregation(
-                lookup, project, match, playersUnwind, playerLookup, group
-        );
 
         return mongoTemplate.aggregate(aggregation, COLLECTION, String.class)
                 .map(this::toEntityFromJson)

@@ -2,7 +2,7 @@ package co.com.sofka.api.game;
 
 import co.com.sofka.event.EventPublisher;
 import co.com.sofka.model.card.Card;
-import co.com.sofka.model.events.DomainEvent;
+import co.com.sofka.generic.events.DomainEvent;
 import co.com.sofka.model.game.Game;
 import co.com.sofka.model.player.Player;
 import co.com.sofka.usecase.creategame.CreateGameUseCase;

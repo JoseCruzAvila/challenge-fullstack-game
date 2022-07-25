@@ -1,6 +1,7 @@
 package co.com.sofka.bus;
 
-import org.json.JSONObject;
+import co.com.sofka.generic.events.DomainEvent;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Exchange;
@@ -18,9 +19,8 @@ public class RabbitMQEventBus {
         this.exchange = exchange;
     }
 
-    public void publish(String event) {
-        String eventType =  new JSONObject(event).getString("type");
-        log.info("Event received: {}", eventType);
-        rabbitTemplate.convertAndSend(exchange.getName(), eventType, event);
+    public void publish(DomainEvent event) {
+        log.info("Event received: {}", event.getType());
+        rabbitTemplate.convertAndSend(exchange.getName(), event.getType(), new Gson().toJson(event));
     }
 }

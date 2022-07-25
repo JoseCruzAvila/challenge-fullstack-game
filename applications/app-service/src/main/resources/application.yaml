@@ -1,6 +1,6 @@
 server:
-  port: ${PORT:8080}
-  origin: ${ORIGIN:*}
+  port: "${PORT:8080}"
+  origin: "${ORIGIN:*}"
 spring:
   application:
     name: "challenge-fullstack-game"
@@ -14,9 +14,14 @@ spring:
     include: null
   data:
     mongodb:
-      uri: mongodb://localhost:27017/bettingGame
+      uri: "mongodb://localhost:27017/bettingGame"
   rabbitmq:
-    addresses: amqp://guest:guest@localhost:5672
+    addresses: "amqp://guest:guest@localhost:5672"
+  rsocket:
+    server:
+      port: 7000
+      transport: websocket
+      mapping-path: /rsocket
 management:
   endpoints:
     web:

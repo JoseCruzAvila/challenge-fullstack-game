@@ -3,13 +3,16 @@ apply plugin: 'org.springframework.boot'
 dependencies {
 	implementation project( ':reactive-web')
     implementation project( ':event-adapter')
+    implementation project( ':web-socket')
 	implementation 'org.reactivecommons.utils:object-mapper:0.1.0'
 	implementation project( ':mongo-repository')
     implementation project(':model')
     implementation project(':usecase')
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation('org.springframework.boot:spring-boot-starter-amqp')
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     runtimeOnly('org.springframework.boot:spring-boot-devtools')
+    implementation('com.google.code.gson:gson:2.9.0')
 }
 
 task explodedJar(type: Copy) {

@@ -1,9 +1,7 @@
 package co.com.sofka.event;
 
 import co.com.sofka.bus.RabbitMQEventBus;
-import com.google.gson.Gson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import co.com.sofka.generic.events.DomainEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -15,7 +13,7 @@ public class EventListener implements ApplicationListener<AuditEvent> {
 
     @Override
     public void onApplicationEvent(AuditEvent event) {
-        var entity = new Gson().toJson(event.getEntity());
+        DomainEvent entity = (DomainEvent) event.getEntity();
         bus.publish(entity);
     }
 }
