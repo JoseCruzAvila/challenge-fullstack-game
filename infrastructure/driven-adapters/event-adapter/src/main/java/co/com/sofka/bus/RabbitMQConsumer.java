@@ -1,7 +1,6 @@
 package co.com.sofka.bus;
 
-import co.com.sofka.websocket.SocketHandler;
-import co.com.sofka.websocket.SocketSender;
+import co.com.sofka.websocket.SocketController;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,16 +14,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class RabbitMQConsumer {
     private static final Logger log = LoggerFactory.getLogger(RabbitMQConsumer.class);
-    //private SocketSender socketSender;
-    private SocketHandler socketHandler;
+    private final SocketController socketController;
 
-    public RabbitMQConsumer(SocketHandler socketHandler) {
-        this.socketHandler = socketHandler;
+    public RabbitMQConsumer(SocketController socketController) {
+        this.socketController = socketController;
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = "game.handler", durable = "true"),
-            exchange = @Exchange(value = "fullstack.game", type = "topic"),
+            value = @Queue(value = "game.socket.handler", durable = "true"),
+            exchange = @Exchange(value = "fullstack.game", type = "fanout"),
             key = "game.#"
     ))
     public void gameMessageReceived(Message<String> message) {
@@ -32,10 +30,9 @@ public class RabbitMQConsumer {
     }
 
     private void messageShared(Message<String> message) {
-        JSONObject event = new JSONObject(message.getPayload());
+        JSONObject currentEvent = new JSONObject(message.getPayload())
+                .getJSONObject("source");
         log.info("Message received: {}", message.getPayload());
-        socketHandler.sendMessage(event.getJSONObject("source"));
-        /*socketSender.sendMessage("localhost:8080/retrieve/".concat(event.getJSONObject("source")
-                .getString("gameId")), message.getPayload());*/
+        socketController.send(currentEvent.getString("gameId"), message.getPayload());
     }
 }

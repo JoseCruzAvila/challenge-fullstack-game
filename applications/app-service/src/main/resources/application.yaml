@@ -1,5 +1,5 @@
 server:
-  port: "${PORT:8080}"
+  port: "${PORT:8888}"
   origin: "${ORIGIN:*}"
 spring:
   application:

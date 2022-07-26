@@ -1,5 +1,5 @@
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation('com.google.code.gson:gson:2.9.0')
     implementation('org.json:json:20220320')
 }

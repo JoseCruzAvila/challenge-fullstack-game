@@ -1,5 +1,4 @@
 dependencies {
-    implementation(project(":model"))
     implementation(project(":web-socket"))
     implementation("org.springframework.boot:spring-boot-starter")
     implementation('org.springframework.boot:spring-boot-starter-amqp')
