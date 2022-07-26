@@ -1,10 +1,7 @@
 package co.com.sofka.model.player;
 
 import co.com.sofka.model.card.Card;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Set;
 
@@ -30,4 +27,9 @@ public class Player {
         this.points = 0.0;
         this.deck = Set.of();
     }
+
+    public void addCardToDeck(Card card) {
+        this.deck.add(card);
+    }
 }
+
