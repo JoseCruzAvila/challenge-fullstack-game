@@ -14,14 +14,9 @@ spring:
     include: null
   data:
     mongodb:
-      uri: "mongodb://localhost:27017/bettingGame"
+      uri: "mongodb+srv://guest:guest1234@cluster0.z97cb4s.mongodb.net/cards?retryWrites=true&w=majority"
   rabbitmq:
-    addresses: "amqp://guest:guest@localhost:5672"
-  rsocket:
-    server:
-      port: 7000
-      transport: websocket
-      mapping-path: /rsocket
+    addresses: "amqps://jrasplef:uhxSmsC5cJwyMoCqXlxf9Q4VaxtXNqnI@jackal.rmq.cloudamqp.com/jrasplef"
 management:
   endpoints:
     web:
