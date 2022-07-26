@@ -30,4 +30,8 @@ public class Player {
         this.points = 0.0;
         this.deck = Set.of();
     }
+
+    public void addCardToDeck(Card card) {
+        this.deck.add(card);
+    }
 }

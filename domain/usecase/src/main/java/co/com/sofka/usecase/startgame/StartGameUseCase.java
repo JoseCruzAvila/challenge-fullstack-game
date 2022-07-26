@@ -11,7 +11,7 @@ public class StartGameUseCase {
     private final GameRepository repository;
 
     public Mono<Game> gameById(String gameId) {
-        return repository.findByGameId(gameId);
+        return repository.findById("gameId", gameId);
     }
 
     public Mono<GameStarted> startGame(Game game) {

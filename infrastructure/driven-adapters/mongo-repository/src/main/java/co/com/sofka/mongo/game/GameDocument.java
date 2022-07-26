@@ -1,7 +1,7 @@
 package co.com.sofka.mongo.game;
 
+import co.com.sofka.mongo.player.PlayerDocument;
 import lombok.Data;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,6 +16,6 @@ public class GameDocument {
     @Indexed(unique = true)
     private String gameId;
     private Boolean playing;
-    private ObjectId winnerId;
-    private Set<ObjectId> playersList;
+    private PlayerDocument winner;
+    private Set<PlayerDocument> players;
 }

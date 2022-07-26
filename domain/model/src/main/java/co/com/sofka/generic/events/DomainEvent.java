@@ -1,13 +1,17 @@
 package co.com.sofka.generic.events;
 
-public class DomainEvent {
-    private final String type;
+import lombok.RequiredArgsConstructor;
 
-    public DomainEvent(String type) {
-        this.type = type;
-    }
+@RequiredArgsConstructor
+public class DomainEvent<T> {
+    private final String type;
+    private final T source;
 
     public String getType() {
         return this.type;
+    }
+
+    public T getSource() {
+        return source;
     }
 }

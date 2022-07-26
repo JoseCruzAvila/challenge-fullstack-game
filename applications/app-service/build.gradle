@@ -3,7 +3,6 @@ apply plugin: 'org.springframework.boot'
 dependencies {
 	implementation project( ':reactive-web')
     implementation project( ':event-adapter')
-    implementation project( ':web-socket')
 	implementation 'org.reactivecommons.utils:object-mapper:0.1.0'
 	implementation project( ':mongo-repository')
     implementation project(':model')

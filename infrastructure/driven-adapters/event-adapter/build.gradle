@@ -1,6 +1,6 @@
 dependencies {
     implementation(project(":model"))
-    implementation(project(":web-socket"))
+    implementation(project(":usecase"))
     implementation("org.springframework.boot:spring-boot-starter")
     implementation('org.springframework.boot:spring-boot-starter-amqp')
     implementation 'org.springframework.boot:spring-boot-starter-webflux'

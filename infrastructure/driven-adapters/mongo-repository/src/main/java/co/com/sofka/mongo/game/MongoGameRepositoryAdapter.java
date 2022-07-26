@@ -4,25 +4,22 @@ import co.com.sofka.model.card.Card;
 import co.com.sofka.model.game.Game;
 import co.com.sofka.model.game.gateways.GameRepository;
 import co.com.sofka.model.player.Player;
+import co.com.sofka.mongo.card.CardDocument;
 import co.com.sofka.mongo.helper.AdapterOperations;
-import com.google.gson.Gson;
-import org.bson.types.ObjectId;
-import org.json.JSONObject;
+import co.com.sofka.mongo.player.PlayerDocument;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Repository
 public class MongoGameRepositoryAdapter extends AdapterOperations<Game, GameDocument, String, MongoDBGameRepository> implements GameRepository {
     private final ReactiveMongoTemplate mongoTemplate;
-    private static final String COLLECTION = "gameDocument";
 
     public MongoGameRepositoryAdapter(MongoDBGameRepository repository, ObjectMapper mapper, ReactiveMongoTemplate mongoTemplate) {
         super(repository, mapper, d -> mapper.map(d, Game.class));
@@ -31,63 +28,15 @@ public class MongoGameRepositoryAdapter extends AdapterOperations<Game, GameDocu
     }
 
     @Override
-    public Mono<Game> save(Game game) {
-        return Mono.just(game)
-                .map(this::toData)
-                .flatMap(this::saveData)
-                .flatMap(currentGame -> this.findById("_id", currentGame.getId()));
-    }
-
-    @Override
     public Flux<Game> findAll() {
-        var lookup = LookupOperation.newLookup()
-                .from("playerDocument")
-                .localField("playersList")
-                .foreignField("_id")
-                .as("players");
-        var project = Aggregation.project("_id", "gameId", "playing", "winnerId", "players");
-        var playersUnwind = Aggregation.unwind("players");
-        var playerLookup = LookupOperation.newLookup()
-                .from("cardDocument")
-                .localField("players.cards")
-                .foreignField("_id")
-                .as("players.deck");
-        var group = Aggregation.group("_id", "gameId", "playing", "winnerId")
-                .push("players")
-                .as("players");
-        var aggregation = Aggregation.newAggregation(
-                lookup, project, playersUnwind, playerLookup, group
-        );
-
-        return mongoTemplate.aggregate(aggregation, COLLECTION, String.class)
-                .map(this::toEntityFromJson);
+        return mongoTemplate.findAll(GameDocument.class)
+                .map(this::toEntity);
     }
 
     public Mono<Game> findById(String criteria, String toFind) {
-        var lookup = LookupOperation.newLookup()
-                .from("playerDocument")
-                .localField("playersList")
-                .foreignField("_id")
-                .as("players");
-        var project = Aggregation.project("_id", "gameId", "playing", "winnerId", "players");
-        var match = Aggregation.match(Criteria.where(criteria).is(toFind));
-        var playersUnwind = UnwindOperation.newUnwind()
-                .path("players")
-                .noArrayIndex()
-                .preserveNullAndEmptyArrays();
-        var playerLookup = LookupOperation.newLookup()
-                .from("cardDocument")
-                .localField("players.cards")
-                .foreignField("_id")
-                .as("players.deck");
-        var group = Aggregation.group("_id", "gameId", "playing", "winnerId")
-                .push("players")
-                .as("players");
-        var aggregation = Aggregation.newAggregation(
-                lookup, project, match, playersUnwind, playerLookup, group);
-
-        return mongoTemplate.aggregate(aggregation, COLLECTION, String.class)
-                .map(this::toEntityFromJson)
+        var condition = new Query().addCriteria(Criteria.where(criteria).is(toFind));
+        return mongoTemplate.find(condition, GameDocument.class)
+                .map(this::toEntity)
                 .single();
     }
 
@@ -97,67 +46,49 @@ public class MongoGameRepositoryAdapter extends AdapterOperations<Game, GameDocu
         gameDocument.setId(game.getId());
         gameDocument.setGameId(game.getGameId());
         gameDocument.setPlaying(game.getPlaying());
-        gameDocument.setWinnerId(game.getWinner() != null ? new ObjectId(game.getWinner().getId()) : null);
-        gameDocument.setPlayersList(game.getPlayers().stream()
-                .map(player -> new ObjectId(player.getId()))
+        gameDocument.setWinner(game.getWinner() != null ? this.toData(game.getWinner()) : null);
+        gameDocument.setPlayers(game.getPlayers().stream()
+                .map(this::toData)
                 .collect(Collectors.toSet()));
 
         return gameDocument;
     }
 
-    @Override
-    protected Game toEntity(GameDocument gameDocument) {
-        return this.findById(gameDocument.getId())
-                .block();
+    protected PlayerDocument toData(Player player) {
+        PlayerDocument playerDocument = new PlayerDocument();
+        playerDocument.setName(player.getName());
+        playerDocument.setEmail(player.getEmail());
+        playerDocument.setPoints(player.getPoints());
+        playerDocument.setDeck(player.getDeck().stream()
+                .map(card -> mapper.map(card, CardDocument.class))
+                .collect(Collectors.toSet()));
+
+        return playerDocument;
     }
 
-    private Game toEntityFromJson (String body) {
-        var jsonBody = new JSONObject(body);
-        var jsonData = jsonBody.getJSONObject("_id");
-
-        var players = jsonBody.getJSONArray("players")
-                .toList()
-                .stream()
-                .map(player -> new JSONObject(new Gson().toJson(player)))
-                .map(this::playerFromJson)
-                .collect(Collectors.toSet());
-
-        var winner = players.stream()
-                .filter(this.verifyIfWinner(jsonData))
-                .findFirst()
-                .orElse(null);
-
+    @Override
+    protected Game toEntity(GameDocument gameDocument) {
         Game game = new Game();
-        game.setId(jsonData.getJSONObject("_id").getString("$oid"));
-        game.setGameId(jsonData.getString("gameId"));
-        game.setPlaying(jsonData.getBoolean("playing"));
-        game.setWinner(winner);
-        game.setPlayers(players);
+        game.setId(gameDocument.getId());
+        game.setGameId(gameDocument.getGameId());
+        game.setPlaying(gameDocument.getPlaying());
+        game.setWinner(gameDocument.getWinner() != null ? this.toEntity(gameDocument.getWinner()) : null);
+        game.setPlayers(gameDocument.getPlayers().stream()
+                .map(this::toEntity)
+                .collect(Collectors.toSet()));
 
         return game;
     }
 
-    private Player playerFromJson(JSONObject jsonPlayer) {
-        var deck = jsonPlayer.getJSONArray("deck")
-                .toList()
-                .stream()
-                .map(JSONObject::new)
-                .map(card -> new Gson().fromJson(card.toString(), Card.class))
-                .collect(Collectors.toSet());
-
+    protected Player toEntity(PlayerDocument playerDocument) {
         Player player = new Player();
-        player.setId(jsonPlayer.getJSONObject("_id").getString("$oid"));
-        player.setName(jsonPlayer.getString("name"));
-        player.setEmail(jsonPlayer.getString("email"));
-        player.setPoints(jsonPlayer.getDouble("points"));
-        player.setDeck(deck);
+        player.setName(playerDocument.getName());
+        player.setEmail(playerDocument.getEmail());
+        player.setPoints(playerDocument.getPoints());
+        player.setDeck(playerDocument.getDeck().stream()
+                .map(card -> mapper.map(card, Card.class))
+                .collect(Collectors.toSet()));
 
         return player;
-    }
-
-    private Predicate<Player> verifyIfWinner(JSONObject jsonData) {
-        return player -> jsonData.has("winnerId") && player.getId()
-                .equals(jsonData.getJSONObject("winnerId")
-                        .getString("$oid"));
     }
 }
