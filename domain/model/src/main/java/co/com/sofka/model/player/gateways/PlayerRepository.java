@@ -5,4 +5,6 @@ import reactor.core.publisher.Mono;
 
 public interface PlayerRepository {
     Mono<Player> save(Player player);
+
+    Mono<Player> findById(String criteria, String toFind);
 }

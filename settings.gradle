@@ -8,8 +8,6 @@ project(':model').projectDir = file('./domain/model')
 project(':usecase').projectDir = file('./domain/usecase')
 include ':mongo-repository'
 project(':mongo-repository').projectDir = file('./infrastructure/driven-adapters/mongo-repository')
-include ':event-adapter'
-project(':event-adapter')?.projectDir = file('./infrastructure/driven-adapters/event-adapter')
 
 include ':reactive-web'
 project(':reactive-web').projectDir = file('./infrastructure/entry-points/reactive-web')
