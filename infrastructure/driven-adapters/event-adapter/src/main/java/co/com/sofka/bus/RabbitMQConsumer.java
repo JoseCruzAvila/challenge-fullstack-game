@@ -30,9 +30,8 @@ public class RabbitMQConsumer {
     }
 
     private void messageShared(Message<String> message) {
-        JSONObject currentEvent = new JSONObject(message.getPayload())
-                .getJSONObject("source");
+        JSONObject currentEvent = new JSONObject(message.getPayload());
         log.info("Message received: {}", message.getPayload());
-        socketController.send(currentEvent.getString("gameId"), message.getPayload());
+        socketController.send(currentEvent.getString("aggregateId"), message.getPayload());
     }
 }
