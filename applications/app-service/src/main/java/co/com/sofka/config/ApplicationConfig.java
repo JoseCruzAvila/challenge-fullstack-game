@@ -29,6 +29,6 @@ public class ApplicationConfig {
 
     @Bean
     public Flux<DomainEvent> domainEvents() {
-        return Flux.just(new GameStarted(new Game()));
+        return Flux.just(new GameStarted("", new Game()));
     }
 }

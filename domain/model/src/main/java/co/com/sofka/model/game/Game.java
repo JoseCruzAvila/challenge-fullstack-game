@@ -17,11 +17,13 @@ public class Game {
     private Boolean playing;
     private Player winner;
     private Set<Player> players;
+    private Integer maxCards;
 
     public Game() {
         this.playing = false;
         this.winner = null;
         this.players = Set.of();
+        this.maxCards = 5;
     }
 
     public Game(String id, Player player) {
@@ -29,6 +31,7 @@ public class Game {
         this.playing = false;
         this.winner = null;
         this.players = Set.of(player);
+        this.maxCards = 5;
     }
 
     public void addPlayer(Player player) {
@@ -36,7 +39,11 @@ public class Game {
     }
 
     public void splitCards(List<Card> cards) {
-        this.players.forEach(player -> player.addCardToDeck(randomCard(cards)));
+        this.players.forEach(player -> {
+            while (player.getDeck().size() < this.maxCards) {
+                player.addCardToDeck(randomCard(cards));
+            }
+        });
     }
 
     private Card randomCard(List<Card> cards) {

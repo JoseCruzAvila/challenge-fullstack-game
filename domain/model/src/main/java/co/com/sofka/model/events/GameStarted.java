@@ -5,7 +5,7 @@ import co.com.sofka.model.game.Game;
 
 public class GameStarted extends DomainEvent<Game> {
 
-    public GameStarted(Game source) {
-        super("game.GameStarted", source);
+    public GameStarted(String aggregateId, Game source) {
+        super("game.GameStarted", aggregateId, source);
     }
 }
