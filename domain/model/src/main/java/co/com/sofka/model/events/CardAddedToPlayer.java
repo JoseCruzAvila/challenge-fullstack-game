@@ -5,7 +5,7 @@ import co.com.sofka.model.player.Player;
 
 public class CardAddedToPlayer extends DomainEvent<Player> {
 
-    public CardAddedToPlayer(Player player) {
-        super("player.CardAdded", player);
+    public CardAddedToPlayer(String aggregateId, Player player) {
+        super("player.CardAdded", aggregateId, player);
     }
 }

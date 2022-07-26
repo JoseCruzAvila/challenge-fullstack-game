@@ -10,5 +10,6 @@ public class CardDocument {
     @Id
     private String id;
     private String image;
+    private Integer power;
     private String description;
 }

@@ -25,9 +25,7 @@ public class EventListenerSubscriber {
 
     public void onNext(DomainEvent domainEvent) {
         var event = Objects.requireNonNull(domainEvent);
-        var currentUseCase = this.useCases.blockFirst();
-        log.info("data: {}", currentUseCase.eventType());
-        log.info("data 2: {}", event.getType());
+
         this.useCases.filter(useCaseWrap -> useCaseWrap.eventType()
                 .equals(event.getType()))
                 .map(UseCase.UseCaseWrap::useCase)

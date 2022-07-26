@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 public class Card {
     private String id;
     private String image;
+    private Integer power;
     private String description;
 }

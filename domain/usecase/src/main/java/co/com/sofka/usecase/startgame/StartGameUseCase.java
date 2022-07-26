@@ -17,6 +17,6 @@ public class StartGameUseCase {
     public Mono<GameStarted> startGame(Game game) {
         game.setPlaying(true);
         return repository.save(game)
-                .map(newGame -> new GameStarted(game));
+                .map(newGame -> new GameStarted(game.getId(), game));
     }
 }

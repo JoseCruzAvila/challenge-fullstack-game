@@ -17,8 +17,7 @@ public class SplitCardsUseCase extends UseCase<CardAddedToPlayer, Game> {
 
     @Override
     public Flux<CardAddedToPlayer> execute(Game game) {
-        var event =this.addCardsToPlayers(game);
-        return event;
+        return this.addCardsToPlayers(game);
     }
 
     public Flux<CardAddedToPlayer> addCardsToPlayers(Game game) {
@@ -31,6 +30,6 @@ public class SplitCardsUseCase extends UseCase<CardAddedToPlayer, Game> {
                         })
                         .blockOptional())
                 .orElseThrow()
-                .map(CardAddedToPlayer::new);
+                .map(player -> new CardAddedToPlayer(game.getGameId(), player));
     }
 }
