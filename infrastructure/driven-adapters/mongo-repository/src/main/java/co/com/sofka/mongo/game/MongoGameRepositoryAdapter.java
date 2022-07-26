@@ -34,7 +34,7 @@ public class MongoGameRepositoryAdapter extends AdapterOperations<Game, GameDocu
     }
 
     public Mono<Game> findById(String criteria, String toFind) {
-        var condition = new Query().addCriteria(Criteria.where(criteria).is(toFind));
+        var condition = Query.query(Criteria.where(criteria).is(toFind));
         return mongoTemplate.find(condition, GameDocument.class)
                 .map(this::toEntity)
                 .single();
